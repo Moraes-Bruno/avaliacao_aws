@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Session;
 | contains the "web" middleware group. Now create something great!
 |
 */
+Route::get('/', [EstacionamentoController::class, 'show'])->name('adminLogin');
 
 //Processo de Login do Admin
 Route::view('/adminLogin','adminLogin')->name('adminLogin');

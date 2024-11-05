@@ -9,18 +9,9 @@ class EstacionamentoController extends Controller
 {
     public function show()
     {
-        return view('index');
+        return view('adminLogin');
     }
-    public function showIndex2()
-    {
-        $estacionamentos = Estacionamento::all();
-        return view('index2', ['estacionamentos' => $estacionamentos]);
-    }
-    public function showhome()
-    {
-        $estacionamentos = Estacionamento::all();
-        return view('home', ['estacionamentos' => $estacionamentos]);
-    }
+    
     public function estacionamentos_form($_id = false)
     {
         if ($_id) {

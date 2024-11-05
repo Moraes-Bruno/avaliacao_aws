@@ -138,13 +138,6 @@
 @endsection
 @section('content')
 <section class="content m-1">
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-md-12 h-100">
-                <div id="map" class="w-100" style="height: 300px;"></div>
-            </div>
-        </div>
-    </div>
     @if(isset($dados))
     <form action="{{ route('estacionamento.alterar', $dados->_id) }}" method="post">
         @csrf
@@ -270,21 +263,86 @@
                     </div>
                 </div>
                 <b>
-                    <p>Insira abaixo o layout do seu estacionamento:</p>
+                    <p>Desenhe o layout do seu estacionamento:</p>
                 </b>
-                <div class="row lead">
-                    <span class=" badge col m-1 normal">Vaga Normal</span>
-                    <span class=" badge col m-1 deficiente">Vaga para Deficientes</span>
-                    <span class=" badge col m-1 idoso">Vaga para Idosos</span>
-                    <span class=" badge col m-1 autista">Vaga para Autistas</span>
-                    <span class=" badge col m-1 objeto">Objeto Qualquer</span>
-                    <span class=" badge border border-secondary col m-1 vazio">Espaço Vazio</span>
+                <div class="card" style="margin: 1% 30%; padding:2%;">
+                    <b><p class="card-title">Selecione o tipo de vaga que deseja adicionar no layout:</p></b>
+                    <div class="form-check">
+                      <input class="form-check-input" type="radio" name="normal" id="normal" value="normal" checked>
+                      <label class="form-check-label" for="normal">
+                        Vaga Normal
+                      </label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="radio" name="deficiente" id="deficiente" value="deficiente">
+                      <label class="form-check-label" for="deficiente">
+                        Vaga para Deficientes
+                      </label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="radio" name="idoso" id="idoso" value="idoso">
+                      <label class="form-check-label" for="idoso">
+                        Vaga para Idosos
+                      </label>
+                    </div>
+                     <div class="form-check">
+                      <input class="form-check-input" type="radio" name="autista" id="autista" value="autista">
+                      <label class="form-check-label" for="autista">
+                        Vaga para Autistas
+                      </label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="radio" name="objeto" id="objeto" value="objeto">
+                      <label class="form-check-label" for="objeto">
+                        Objeto Qualquer
+                      </label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="radio" name="vazio" id="vazio" value="vazio">
+                      <label class="form-check-label" for="vazio">
+                        Espaço Vazio
+                      </label>
+                    </div>
+                    
+                    <button type="button" class="btn btn-primary">Vaga Normal</button>
+                    <button type="button" class="btn btn-secondary">Vaga para Deficientes</button>
+                    <button type="button" class="btn btn-success">Vaga para Idosos</button>
+                    <button type="button" class="btn btn-danger">Vaga para Autistas</button>
+                    <button type="button" class="btn btn-warning">Objeto Qualquer</button>
+                    <button type="button" class="btn btn-info">Espaço Vazio</button>
+                    
+                    <button type="button" class="btn btn-outline-primary">Vaga Normal</button>
+                    <button type="button" class="btn btn-outline-secondary">Vaga para Deficientes</button>
+                    <button type="button" class="btn btn-outline-success">Vaga para Idosos</button>
+                    <button type="button" class="btn btn-outline-danger">Vaga para Autistas</button>
+                    <button type="button" class="btn btn-outline-warning">Objeto Qualquer</button>
+                    <button type="button" class="btn btn-outline-info">Espaço Vazio</button>
+                    
+                    <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
+                      <input type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off" checked>
+                      <label class="btn btn-outline-primary" for="btnradio1">Vaga Normal</label>
+                    
+                      <input type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off">
+                      <label class="btn btn-outline-primary" for="btnradio2">Vaga para Deficientes</label>
+                    
+                      <input type="radio" class="btn-check" name="btnradio" id="btnradio3" autocomplete="off">
+                      <label class="btn btn-outline-primary" for="btnradio3">Vaga para Idosos</label>
+                      
+                      <input type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off" checked>
+                      <label class="btn btn-outline-primary" for="btnradio1">Vaga para Autistas</label>
+                    
+                      <input type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off">
+                      <label class="btn btn-outline-primary" for="btnradio2">Objeto Qualquer</label>
+                    
+                      <input type="radio" class="btn-check" name="btnradio" id="btnradio3" autocomplete="off">
+                      <label class="btn btn-outline-primary" for="btnradio3">Espaço Vazio</label>
+                    </div>
                 </div>
                 <table class="table table-bordered">
                     @for ($i = 0; $i < 12; $i++) <tr>
                         @for ($j = 0; $j < 24; $j++) <?php $index = "$i,$j"; ?> <td>
-                            <div style="display: flex; justify-content: center;">
-                                <input type="checkbox" id="vaga{{ $index }}" name="vagas[]" value="{{ $index }}">
+                            <div>
+                                <input style="height:20px; width:20px;margin:25%" type="checkbox" id="vaga{{ $index }}" name="vagas[]" value="{{ $index }}">
                             </div>
                             <input type="hidden" name="tipoVaga{{ $index }}" id="tipoVaga{{ $index }}" value="Vazio">
                             </td>
