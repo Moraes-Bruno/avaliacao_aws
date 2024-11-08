@@ -35,22 +35,16 @@
             <table class="table table-striped table-bordered projects">
                 <thead>
                     <tr>
-                        <th style="width: 20%">
+                        <th style="width: 40%">
                             Nome
                         </th>
-                        <th style="width: 25%">
+                        <th style="width: 40%">
                             Endereço
                         </th>
                         <th style="width: 5%">
-                            Latitude
-                        </th>
-                        <th style="width: 5%">
-                            Longitude
-                        </th>
-                        <th style="width: 2%">
                             Vagas
                         </th>
-                        <th style="width: 37%">
+                        <th style="width: 15%">
                             Ações
                         </th>
                     </tr>
@@ -68,17 +62,7 @@
                                 {{ $estacionamento->endereco }}
                             </a>
                         </td>
-                        <td>
-                            <a>
-                                {{ $estacionamento->latitude }}
-                            </a>
-                        </td>
-                        <td>
-                            <a>
-                                {{ $estacionamento->longitude }}
-                            </a>
-                        </td>
-                        <td>
+                        <td class="text-center">
                             <a>
                                 {{ $estacionamento->totalVagas }}
                             </a>

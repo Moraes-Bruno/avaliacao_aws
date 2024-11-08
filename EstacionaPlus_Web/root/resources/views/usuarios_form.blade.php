@@ -22,7 +22,7 @@
         @method('PUT')
         <div class="card card-warning">
             <div class="card-header">
-                <h3 class="card-title">Informações Gerais</h3>
+                <h3 class="card-title">Editar Usuário</h3>
 
                 <div class="card-tools">
                     <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
@@ -66,7 +66,7 @@
         @csrf
         <div class="card card-success">
             <div class="card-header">
-                <h3 class="card-title">Informações Gerais</h3>
+                <h3 class="card-title">Cadastrar Usuário</h3>
 
                 <div class="card-tools">
                     <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
