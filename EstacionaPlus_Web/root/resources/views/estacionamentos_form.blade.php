@@ -2,43 +2,23 @@
 
 @section('js')
 <script>
-    function initMap() {
-        // Posição inicial do mapa
-        const posicaoInicial = {
-            lat: -22.434050,
-            lng: -46.828170
-        };
+    let tipoSelecionado = 'normal';
+    
+    let vagasSelecionadas = 0;
 
-        // Opções do mapa
-        const opcoesMapa = {
-            zoom: 15,
-            center: posicaoInicial
-        };
-
-        // Criação do mapa
-        const mapa = new google.maps.Map(document.getElementById('map'), opcoesMapa);
-
-        const marcador = new google.maps.Marker({
-            map: mapa, // O mapa onde o marcador será exibido
-            draggable: true, // Permite arrastar o marcador
-        });
-
-        // Evento de clique no mapa
-        google.maps.event.addListener(mapa, 'click', function(event) {
-            // Obtém as coordenadas do local onde foi clicado
-            const latitude = event.latLng.lat();
-            const longitude = event.latLng.lng();
-
-            // Atualiza os campos de latitude e longitude
-            document.getElementById('latitude').value = latitude;
-            document.getElementById('longitude').value = longitude;
-
-            // Define as coordenadas do marcador
-            marcador.setPosition(event.latLng);
-        });
-    }
-    // layout-estacionamento.js
     $(document).ready(function() {
+    
+        let totalVagasInput = $('#totalVagas');
+        if (totalVagasInput.val() === "") {
+            totalVagasInput.val(vagasSelecionadas);  // Inicializa com 0 ou com um valor específico caso necessário
+        } else {
+            vagasSelecionadas = parseInt(totalVagasInput.val(), 10);  // Preenche com o valor inicial se já houver dados
+        }
+    
+        $('.form-check-input').click(function () {
+            tipoSelecionado = this.value;
+        });
+
         $('input[type="checkbox"]').click(function() {
             var checkbox = $(this);
             var isChecked = checkbox.is(":checked");
@@ -46,79 +26,75 @@
 
             if (isChecked) {
                 changeVagaType(checkbox, td);
+                if (tipoSelecionado != "objeto") vagasSelecionadas++;
             } else {
                 clearVagaType(checkbox, td);
+                 if (tipoSelecionado != "objeto") vagasSelecionadas--;
             }
+            
+            totalVagasInput.val(vagasSelecionadas);
         });
+        
     });
-
+    
     function changeVagaType(checkbox, td) {
-        var vagaTypes = ["Normal", "Deficiente", "Idoso", "Autista", "Objeto"];
-        var currentType = checkbox.val();
-        var currentIndex = vagaTypes.indexOf(currentType);
-        var nextIndex = (currentIndex + 1) % vagaTypes.length;
-        var nextType = vagaTypes[nextIndex];
+        var vagaTypes = ["normal", "deficiente", "idoso", "autista", "objeto", "vazio"];
 
-        checkbox.closest('td').find('input[id^="tipo"]').val(nextType);
-        td.removeClass(vagaTypes.join(' ')).addClass(nextType.toLowerCase());
-
-        if (currentType === "Objeto") {
-            td.removeClass().data('vagaType', '');
-            checkbox.closest('td').find('input[id^="tipo"]').val('Vazio');
+        if (tipoSelecionado === "vazio") {
+            clearVagaType(checkbox, td);
         } else {
-            td.data('vagaType', nextType);
+            td.removeClass(vagaTypes.join(' ')).addClass(tipoSelecionado);
+
+            checkbox.closest('td').find('input[type="hidden"]').val(tipoSelecionado);
         }
     }
 
     function clearVagaType(checkbox, td) {
-        var vagaTypes = ["Normal", "Deficiente", "Idoso", "Autista", "Objeto"];
+        var vagaTypes = ["normal", "deficiente", "idoso", "autista", "objeto", "vazio"];
 
         checkbox.val("");
         td.removeClass(vagaTypes.join(' '));
-
-        var prevType = td.data('vagaType');
-        if (prevType) {
-            td.addClass(prevType.toLowerCase());
-            checkbox.val(prevType);
-        }
+        td.find('input[type="hidden"]').val("vazio");
     }
 </script>
 @endsection
 @section('css')
 <style>
     .normal {
-        background-color: #88A0A8;
+        background-color: #388659;
         color: white;
-        /* Cor para vaga normal */
     }
 
     .deficiente {
-        background-color: #546A76;
+        background-color: #FDE74C;
         color: white;
-        /* Cor para vaga de deficiente */
     }
 
     .idoso {
-        background-color: #334751;
+        background-color: #81ADC8;
         color: white;
-        /* Cor para vaga de idoso */
     }
 
     .autista {
-        background-color: #B4656F;
+        background-color: #BA3B46;
         color: white;
-        /* Cor para vaga de autista */
     }
 
     .objeto {
-        background-color: #302b33;
+        background-color: #252422;
         color: white;
-        /* Cor para vaga com objeto */
     }
 
     .vazio {
         background-color: white;
-        /* Cor para vaga vazia */
+    }
+    
+    .box {
+        width: 30px;
+        height: 30px;
+        display: inline-block; 
+        margin-right: 10px; 
+        border-radius: 4px; 
     }
 </style>
 @endsection
@@ -144,7 +120,7 @@
         @method('PUT')
         <div class="card card-warning">
             <div class="card-header">
-                <h3 class="card-title">Informações Gerais</h3>
+                <h3 class="card-title">Editar Estacionamento</h3>
 
                 <div class="card-tools">
                     <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
@@ -153,38 +129,61 @@
                 </div>
             </div>
             <div class="card-body">
-                <div class="form-group">
-                    <label for="nome">Nome:</label>
-                    <input type="text" id="nome" name="nome" class="form-control" value="{{ $dados->nome }}">
-                </div>
-                <div class="form-group">
-                    <label for="endereco">Endereço:</label>
-                    <input type="text" id="endereco" name="endereco" class="form-control" value="{{ $dados->endereco }}">
-                </div>
                 <div class="form-group row">
-                    <div class="col-5">
-                        <label for="latitude">Latitude:</label>
-                        <input type="text" id="latitude" name="latitude" class="form-control" value="{{ $dados->latitude }}">
+                    <div class="form-group col-5">
+                        <label for="nome">Nome:</label>
+                        <input type="text" id="nome" name="nome" class="form-control" value="{{ $dados->nome }}">
                     </div>
-                    <div class="col-5">
-                        <label for="longitude">Longitude:</label>
-                        <input type="text" id="longitude" name="longitude" class="form-control" value="{{ $dados->longitude }}">
+                    <div class="form-group col-5">
+                        <label for="endereco">Endereço:</label>
+                        <input type="text" id="endereco" name="endereco" class="form-control" value="{{ $dados->endereco }}">
                     </div>
-                    <div class="col-2">
-                        <label for="totalVagas">Total de Vagas:</label>
-                        <input type="number" id="totalVagas" name="totalVagas" class="form-control" value="{{ $dados->totalVagas }}">
+                    <div class="form-group col-2">
+                        <p>Total de Vagas:</label>
+                        <input type="number" id="totalVagas" name="totalVagas" class="form-control" value="{{ $dados->totalVagas }}" readonly>
                     </div>
                 </div>
                 <b>
                     <p>Modifique abaixo o layout do seu estacionamento:</p>
                 </b>
-                <div class="row lead">
-                    <span class=" badge col m-1 normal">Vaga Normal</span>
-                    <span class=" badge col m-1 deficiente">Vaga para Deficientes</span>
-                    <span class=" badge col m-1 idoso">Vaga para Idosos</span>
-                    <span class=" badge col m-1 autista">Vaga para Autistas</span>
-                    <span class=" badge col m-1 objeto">Objeto Qualquer</span>
-                    <span class=" badge border border-secondary col m-1 vazio">Espaço Vazio</span>
+                <div class="card" style="margin: 1% 30%; padding:2%;">
+                    <b><p class="card-title">Selecione o tipo de vaga que deseja adicionar no layout:</p></b>
+                    <div class="form-check d-flex align-items-center">
+                        <div class='box normal'></div>
+                        <input class="form-check-input" type="radio" name="tipoVaga" id="normal" value="normal" checked>
+                        <label class="form-check-label ms-2" for="normal">Vaga Normal</label>
+                    </div>
+                    
+                    <div class="form-check d-flex align-items-center mt-2">
+                        <div class='box deficiente'></div>
+                        <input class="form-check-input" type="radio" name="tipoVaga" id="deficiente" value="deficiente">
+                        <label class="form-check-label ms-2" for="deficiente">Vaga para Deficientes</label>
+                    </div>
+                
+                    <!-- Repita o mesmo para as outras opções -->
+                    <div class="form-check d-flex align-items-center mt-2">
+                        <div class='box idoso'></div>
+                        <input class="form-check-input" type="radio" name="tipoVaga" id="idoso" value="idoso">
+                        <label class="form-check-label ms-2" for="idoso">Vaga para Idosos</label>
+                    </div>
+                    
+                    <div class="form-check d-flex align-items-center mt-2">
+                        <div class='box autista'></div>
+                        <input class="form-check-input" type="radio" name="tipoVaga" id="autista" value="autista">
+                        <label class="form-check-label ms-2" for="autista">Vaga para Autistas</label>
+                    </div>
+                    
+                    <div class="form-check d-flex align-items-center mt-2">
+                        <div class='box objeto'></div>
+                        <input class="form-check-input" type="radio" name="tipoVaga" id="objeto" value="objeto">
+                        <label class="form-check-label ms-2" for="objeto">Objeto Qualquer</label>
+                    </div>
+                    
+                    <div class="form-check d-flex align-items-center mt-2">
+                        <div class='box vazio'></div>
+                        <input class="form-check-input" type="radio" name="tipoVaga" id="vazio" value="vazio">
+                        <label class="form-check-label ms-2" for="vazio">Espaço Vazio</label>
+                    </div>
                 </div>
                 <?php
                 // Inicializa a matriz vazia
@@ -203,7 +202,7 @@
                         @for ($j = 0; $j < 24; $j++) <?php $index = "$i,$j"; ?> <td class="<?php echo strtolower($matrix[$i][$j]['Tipo']) ?>">
                             <div style="display: flex; justify-content: center;">
                                 <label for="vagas[]"></label>
-                                <input type="checkbox" id="vaga{{ $index }}" name="vagas[]" value="{{ $index }}" @if($matrix[$i][$j]['Tipo'] !="Vazio" && $matrix[$i][$j]['Tipo'] != null) checked @endif>
+                                <input style="height:20px; width:20px;margin:25%" type="checkbox" id="vaga{{ $index }}" name="vagas[]" value="{{ $index }}" @if($matrix[$i][$j]['Tipo'] !="vazio" && $matrix[$i][$j]['Tipo'] != null) checked @endif>
                             </div>
                             <input type="hidden" name="vagas[{{ $index }}][Posição]" id="posicao" value="{{ $index }}">
                             <input type="hidden" name="vagas[{{ $index }}][Tipo]" id="tipo" value="{{ $matrix[$i][$j]['Tipo'] }}">
@@ -231,7 +230,7 @@
         @csrf
         <div class="card card-success">
             <div class="card-header">
-                <h3 class="card-title">Informações Gerais</h3>
+                <h3 class="card-title">Cadastrar Estacionamento</h3>
 
                 <div class="card-tools">
                     <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
@@ -240,26 +239,18 @@
                 </div>
             </div>
             <div class="card-body">
-                <div class="form-group">
-                    <label for="nome">Nome:</label>
-                    <input type="text" id="nome" name="nome" class="form-control">
-                </div>
-                <div class="form-group">
-                    <label for="endereco">Endereço:</label>
-                    <input type="text" id="endereco" name="endereco" class="form-control">
-                </div>
                 <div class="form-group row">
-                    <div class="col-5">
-                        <label for="latitude">Latitude:</label>
-                        <input type="text" id="latitude" name="latitude" class="form-control">
+                    <div class="form-group col-5">
+                        <label for="nome">Nome:</label>
+                        <input type="text" id="nome" name="nome" class="form-control">
                     </div>
-                    <div class="col-5">
-                        <label for="longitude">Longitude:</label>
-                        <input type="text" id="longitude" name="longitude" class="form-control">
+                    <div class="form-group col-5">
+                        <label for="endereco">Endereço:</label>
+                        <input type="text" id="endereco" name="endereco" class="form-control">
                     </div>
-                    <div class="col-2">
+                    <div class="form-group col-2">
                         <label for="totalVagas">Total de Vagas:</label>
-                        <input type="number" id="totalVagas" name="totalVagas" class="form-control">
+                        <input type="number" id="totalVagas" name="totalVagas" class="form-control" readonly>
                     </div>
                 </div>
                 <b>
@@ -267,75 +258,41 @@
                 </b>
                 <div class="card" style="margin: 1% 30%; padding:2%;">
                     <b><p class="card-title">Selecione o tipo de vaga que deseja adicionar no layout:</p></b>
-                    <div class="form-check">
-                      <input class="form-check-input" type="radio" name="normal" id="normal" value="normal" checked>
-                      <label class="form-check-label" for="normal">
-                        Vaga Normal
-                      </label>
-                    </div>
-                    <div class="form-check">
-                      <input class="form-check-input" type="radio" name="deficiente" id="deficiente" value="deficiente">
-                      <label class="form-check-label" for="deficiente">
-                        Vaga para Deficientes
-                      </label>
-                    </div>
-                    <div class="form-check">
-                      <input class="form-check-input" type="radio" name="idoso" id="idoso" value="idoso">
-                      <label class="form-check-label" for="idoso">
-                        Vaga para Idosos
-                      </label>
-                    </div>
-                     <div class="form-check">
-                      <input class="form-check-input" type="radio" name="autista" id="autista" value="autista">
-                      <label class="form-check-label" for="autista">
-                        Vaga para Autistas
-                      </label>
-                    </div>
-                    <div class="form-check">
-                      <input class="form-check-input" type="radio" name="objeto" id="objeto" value="objeto">
-                      <label class="form-check-label" for="objeto">
-                        Objeto Qualquer
-                      </label>
-                    </div>
-                    <div class="form-check">
-                      <input class="form-check-input" type="radio" name="vazio" id="vazio" value="vazio">
-                      <label class="form-check-label" for="vazio">
-                        Espaço Vazio
-                      </label>
+                    <div class="form-check d-flex align-items-center">
+                        <div class='box normal'></div>
+                        <input class="form-check-input" type="radio" name="tipoVaga" id="normal" value="normal" checked>
+                        <label class="form-check-label ms-2" for="normal">Vaga Normal</label>
                     </div>
                     
-                    <button type="button" class="btn btn-primary">Vaga Normal</button>
-                    <button type="button" class="btn btn-secondary">Vaga para Deficientes</button>
-                    <button type="button" class="btn btn-success">Vaga para Idosos</button>
-                    <button type="button" class="btn btn-danger">Vaga para Autistas</button>
-                    <button type="button" class="btn btn-warning">Objeto Qualquer</button>
-                    <button type="button" class="btn btn-info">Espaço Vazio</button>
+                    <div class="form-check d-flex align-items-center mt-2">
+                        <div class='box deficiente'></div>
+                        <input class="form-check-input" type="radio" name="tipoVaga" id="deficiente" value="deficiente">
+                        <label class="form-check-label ms-2" for="deficiente">Vaga para Deficientes</label>
+                    </div>
+                
+                    <!-- Repita o mesmo para as outras opções -->
+                    <div class="form-check d-flex align-items-center mt-2">
+                        <div class='box idoso'></div>
+                        <input class="form-check-input" type="radio" name="tipoVaga" id="idoso" value="idoso">
+                        <label class="form-check-label ms-2" for="idoso">Vaga para Idosos</label>
+                    </div>
                     
-                    <button type="button" class="btn btn-outline-primary">Vaga Normal</button>
-                    <button type="button" class="btn btn-outline-secondary">Vaga para Deficientes</button>
-                    <button type="button" class="btn btn-outline-success">Vaga para Idosos</button>
-                    <button type="button" class="btn btn-outline-danger">Vaga para Autistas</button>
-                    <button type="button" class="btn btn-outline-warning">Objeto Qualquer</button>
-                    <button type="button" class="btn btn-outline-info">Espaço Vazio</button>
+                    <div class="form-check d-flex align-items-center mt-2">
+                        <div class='box autista'></div>
+                        <input class="form-check-input" type="radio" name="tipoVaga" id="autista" value="autista">
+                        <label class="form-check-label ms-2" for="autista">Vaga para Autistas</label>
+                    </div>
                     
-                    <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
-                      <input type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off" checked>
-                      <label class="btn btn-outline-primary" for="btnradio1">Vaga Normal</label>
+                    <div class="form-check d-flex align-items-center mt-2">
+                        <div class='box objeto'></div>
+                        <input class="form-check-input" type="radio" name="tipoVaga" id="objeto" value="objeto">
+                        <label class="form-check-label ms-2" for="objeto">Objeto Qualquer</label>
+                    </div>
                     
-                      <input type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off">
-                      <label class="btn btn-outline-primary" for="btnradio2">Vaga para Deficientes</label>
-                    
-                      <input type="radio" class="btn-check" name="btnradio" id="btnradio3" autocomplete="off">
-                      <label class="btn btn-outline-primary" for="btnradio3">Vaga para Idosos</label>
-                      
-                      <input type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off" checked>
-                      <label class="btn btn-outline-primary" for="btnradio1">Vaga para Autistas</label>
-                    
-                      <input type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off">
-                      <label class="btn btn-outline-primary" for="btnradio2">Objeto Qualquer</label>
-                    
-                      <input type="radio" class="btn-check" name="btnradio" id="btnradio3" autocomplete="off">
-                      <label class="btn btn-outline-primary" for="btnradio3">Espaço Vazio</label>
+                    <div class="form-check d-flex align-items-center mt-2">
+                        <div class='box vazio' style="border: 1px solid black;"></div>
+                        <input class="form-check-input" type="radio" name="tipoVaga" id="vazio" value="vazio">
+                        <label class="form-check-label ms-2" for="vazio">Espaço Vazio</label>
                     </div>
                 </div>
                 <table class="table table-bordered">
@@ -344,7 +301,7 @@
                             <div>
                                 <input style="height:20px; width:20px;margin:25%" type="checkbox" id="vaga{{ $index }}" name="vagas[]" value="{{ $index }}">
                             </div>
-                            <input type="hidden" name="tipoVaga{{ $index }}" id="tipoVaga{{ $index }}" value="Vazio">
+                            <input type="hidden" name="tipoVaga{{ $index }}" id="tipoVaga{{ $index }}" value="vazio">
                             </td>
                             @endfor
                             </tr>
