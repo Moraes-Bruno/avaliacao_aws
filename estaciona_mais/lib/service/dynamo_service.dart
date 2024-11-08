@@ -1,53 +1,43 @@
-import 'package:aws_dynamodb_api/dynamodb-2011-12-05.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class DynamoService {
-  final service = DynamoDB(
-      region: 'us-east-1',
-      credentials: AwsClientCredentials(
-          accessKey: "someAccessKey", secretKey: "someSecretKey"));
+  final apiUrl =
+      'https://your-api-id.execute-api.your-region.amazonaws.com/your-stage';
 
-  Future<List<Map<String, AttributeValue>>?> getAll(
-      {required String tableName}) async {
-    var result = await service.scan(tableName: tableName);
-    return result.items;
-  }
-
-  Future<Map<String, AttributeValue>?> getItemById(
-      {required String tableName, required String id}) async {
-    final response = await service.getItem(
-      tableName: tableName,
-      key: {"id": AttributeValue(s: id)} as Key,
+  // Criar Item
+  Future<void> createItem(String id, String value) async {
+    final response = await http.post(
+      Uri.parse('$apiUrl/items'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({'id': id, 'value': value}),
     );
-    return response.item;
+    print(response.body);
   }
 
-  Future<void> updateItem(
-      {required Map<String, AttributeValue> dbData,
-      required String tableName,
-      required String id}) async {
-    await service.updateItem(
-      tableName: tableName,
-      key: {"id": AttributeValue(s: id)} as Key,
-      attributeUpdates: dbData.map((key, value) => MapEntry(
-            key,
-            AttributeValueUpdate(
-              value: value,
-              action: AttributeAction.put,
-            ),
-          )),
+  // Ler Item
+  Future<void> readItem(String id) async {
+    final response = await http.get(
+      Uri.parse('$apiUrl/items/$id'),
     );
+    print(response.body);
   }
 
-  Future<void> deleteItem(
-      {required String tableName, required String id}) async {
-    await service.deleteItem(
-      tableName: tableName,
-      key: {"id": AttributeValue(s: id)} as Key,
+  // Atualizar Item
+  Future<void> updateItem(String id, String newValue) async {
+    final response = await http.put(
+      Uri.parse('$apiUrl/items'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({'id': id, 'newValue': newValue}),
     );
+    print(response.body);
   }
 
-  Future insertNewItem(
-      Map<String, AttributeValue> dbData, String tableName) async {
-    service.putItem(item: dbData, tableName: tableName);
+  // Excluir Item
+  Future<void> deleteItem(String id) async {
+    final response = await http.delete(
+      Uri.parse('$apiUrl/items/$id'),
+    );
+    print(response.body);
   }
 }
