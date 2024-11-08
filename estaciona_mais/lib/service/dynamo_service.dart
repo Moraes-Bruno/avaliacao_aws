@@ -3,7 +3,7 @@ import 'dart:convert';
 
 class DynamoService {
   final apiUrl =
-      'https://your-api-id.execute-api.your-region.amazonaws.com/your-stage';
+      'https://ys8lk9fd78.execute-api.us-east-1.amazonaws.com/gerenciarEstacionamentos';
 
   // Criar Item
   Future<void> createItem(String id, String value) async {
@@ -13,7 +13,7 @@ class DynamoService {
       body: jsonEncode({'id': id, 'value': value}),
     );
     print(response.body);
-  }
+  } 
 
   // Ler Item
   Future<void> readItem(String id) async {
