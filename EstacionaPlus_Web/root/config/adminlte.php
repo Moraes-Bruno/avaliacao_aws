@@ -319,22 +319,6 @@ return [
                 ],
             ],
         ],
-        [
-            'text'    => 'Usuários',
-            'icon' => 'fas fa-fw fa-user',
-            'submenu' => [
-                [
-                    'text' => 'Gerenciar',
-                    'icon' => 'fas fa-cog',
-                    'url'  => '/admin/usuarios',
-                ],
-                [
-                    'text' => 'Adicionar',
-                    'icon' => 'fas fa-plus',
-                    'url'  => '/admin/usuarios/form',
-                ],
-            ],
-        ],
     ],
 
     /*
