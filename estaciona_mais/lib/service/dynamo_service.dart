@@ -3,17 +3,17 @@ import 'dart:convert';
 
 class DynamoService {
   final apiUrl =
-      'https://ys8lk9fd78.execute-api.us-east-1.amazonaws.com/gerenciarEstacionamentos';
+      'https://ys8lk9fd78.execute-api.us-east-1.amazonaws.com/Teste';
 
   // Criar Item
   Future<void> createItem(String id, String value) async {
-    final response = await http.post(
+    final response = await http.put(
       Uri.parse('$apiUrl/items'),
       headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({'id': id, 'value': value}),
+      body: jsonEncode({'id': id, 'nome': value}),
     );
     print(response.body);
-  } 
+  }
 
   // Ler Item
   Future<void> readItem(String id) async {
@@ -23,12 +23,19 @@ class DynamoService {
     print(response.body);
   }
 
+  Future<void> readItems() async {
+    final response = await http.get(
+      Uri.parse('$apiUrl/items'),
+    );
+    print(response.body);
+  }
+
   // Atualizar Item
   Future<void> updateItem(String id, String newValue) async {
     final response = await http.put(
       Uri.parse('$apiUrl/items'),
       headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({'id': id, 'newValue': newValue}),
+      body: jsonEncode({'id': id, 'nome': newValue}),
     );
     print(response.body);
   }
