@@ -1,0 +1,20 @@
+[
+    [
+        {
+            "estacionamentoId": "1",
+            "nome": "Estacionamento Central",
+            "vagas_totais": "100",
+            "vagas_disponiveis": "45",
+            "vagas": [
+                {
+                    "numero": "1",
+                    "ocupada": false
+                },
+                {
+                    "numero": "2",
+                    "ocupada": true
+                }
+            ]
+        }
+    ]
+]

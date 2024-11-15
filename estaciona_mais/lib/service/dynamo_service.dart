@@ -6,11 +6,11 @@ class DynamoService {
       'https://ys8lk9fd78.execute-api.us-east-1.amazonaws.com/Teste';
 
   // Criar Item
-  Future<void> createItem(String id, String value) async {
+  Future<void> createItem(String id, String nome) async {
     final response = await http.put(
       Uri.parse('$apiUrl/items'),
       headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({'id': id, 'nome': value}),
+      body: jsonEncode({'estacionamentoId': id, 'nome': nome}),
     );
     print(response.body);
   }
@@ -31,11 +31,11 @@ class DynamoService {
   }
 
   // Atualizar Item
-  Future<void> updateItem(String id, String newValue) async {
+  Future<void> updateItem(String id, String nome) async {
     final response = await http.put(
       Uri.parse('$apiUrl/items'),
       headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({'id': id, 'nome': newValue}),
+      body: jsonEncode({'estacionamentoId': id, 'nome': nome}),
     );
     print(response.body);
   }
