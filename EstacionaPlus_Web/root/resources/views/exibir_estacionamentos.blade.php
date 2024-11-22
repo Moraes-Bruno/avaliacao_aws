@@ -54,29 +54,33 @@
                     <tr>
                         <td>
                             <a>
-                                {{ $estacionamento->nome }}
+                                {{ $estacionamento['nome'] }}
                             </a>
                         </td>
                         <td>
                             <a>
-                                {{ $estacionamento->endereco }}
+                                {{ $estacionamento['endereco'] }}
                             </a>
                         </td>
                         <td class="text-center">
                             <a>
-                                {{ $estacionamento->totalVagas }}
+                                {{ $estacionamento['totalVagas'] }}
                             </a>
                         </td>
+                        <?php
+                        //colocando o id em uma variável  
+                        $id = $estacionamento['_id'];
+                        ?>
                         <td class="project-actions text-right">
                             <div class="btn-group" role="group" aria-label="Ações">
-                                <a class="btn btn-warning btn-sm mx-1" href="{{ route('estacionamento.detalhes', $estacionamento->_id) }}">
+                                <a class="btn btn-warning btn-sm mx-1" href="{{ route('estacionamento.detalhes', ['id' => $estacionamento['_id']]) }}">
                                     <i class="fas fa-eye"></i>
                                 </a>
-                                <a class="btn btn-info btn-sm mx-1" href="{{ route('estacionamento.form', $estacionamento->_id) }}">
+                                <a class="btn btn-info btn-sm mx-1" href="{{ route('estacionamento.form', ['id' => $estacionamento['_id']]) }}">
                                     <i class="fas fa-pencil-alt"></i>
                                     Editar
                                 </a>
-                                <a class="btn btn-danger btn-sm mx-1" href="{{ route('estacionamento.excluir', $estacionamento->_id) }}" onclick="return confirm('Tem certeza que deseja excluir esse estacionamento?')">
+                                <a class="btn btn-danger btn-sm mx-1" href="{{ route('estacionamento.excluir', ['id' => $estacionamento['_id']]) }}" onclick="return confirm('Tem certeza que deseja excluir esse estacionamento?')">
                                 <i class="fas fa-trash"></i>
                                         Excluir
                                 </a>

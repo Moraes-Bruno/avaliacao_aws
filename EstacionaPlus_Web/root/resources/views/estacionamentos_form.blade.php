@@ -115,7 +115,7 @@
 @section('content')
 <section class="content m-1">
     @if(isset($dados))
-    <form action="{{ route('estacionamento.alterar', $dados->_id) }}" method="post">
+    <form action="{{ route('estacionamento.alterar', ['id' => $dados['_id']]) }}" method="post">
         @csrf
         @method('PUT')
         <div class="card card-warning">
@@ -132,15 +132,15 @@
                 <div class="form-group row">
                     <div class="form-group col-5">
                         <label for="nome">Nome:</label>
-                        <input type="text" id="nome" name="nome" class="form-control" value="{{ $dados->nome }}">
+                        <input type="text" id="nome" name="nome" class="form-control" value="{{ $dados['nome'] }}">
                     </div>
                     <div class="form-group col-5">
                         <label for="endereco">Endereço:</label>
-                        <input type="text" id="endereco" name="endereco" class="form-control" value="{{ $dados->endereco }}">
+                        <input type="text" id="endereco" name="endereco" class="form-control" value="{{ $dados['endereco'] }}">
                     </div>
                     <div class="form-group col-2">
                         <p>Total de Vagas:</label>
-                        <input type="number" id="totalVagas" name="totalVagas" class="form-control" value="{{ $dados->totalVagas }}" readonly>
+                        <input type="number" id="totalVagas" name="totalVagas" class="form-control" value="{{ $dados['totalVagas'] }}" readonly>
                     </div>
                 </div>
                 <b>
@@ -190,7 +190,7 @@
                 $matrix = array_fill(0, 12, array_fill(0, 24, null));
 
                 // Preenche a matriz com os elementos da array de vagas
-                foreach ($dados->vagas as $key => $vaga) {
+                foreach ($dados['vagas'] as $key => $vaga) {
                     $posicao = explode(",", $key);
                     $i = $posicao[0];
                     $j = $posicao[1];

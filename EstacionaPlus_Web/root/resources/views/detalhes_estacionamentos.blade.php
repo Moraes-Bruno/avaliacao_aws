@@ -138,20 +138,20 @@
         <div class="card-body">
             <div class="row">
                 <div class="col-12">
-                    <h4>{{ $dados->nome }}</h4>
+                    <h4>{{ $dados['nome'] }}</h4>
                     <div>
-                        <h5>Endereço: <b>{{ $dados->endereco }}</b></h5>
-                        <h5>Total de vagas: <b>{{ $dados->totalVagas }}</b></h5>
+                        <h5>Endereço: <b>{{ $dados['endereco'] }}</b></h5>
+                        <h5>Total de vagas: <b>{{ $dados['totalVagas'] }}</b></h5>
                     </div>
                     <div id="tabela-vagas"></div>
                 </div>
             </div>
             <div class="btn-group p-3" role="group" aria-label="Ações">
-                <a class="btn btn-info btn-sm mx-1" href="{{ route('estacionamento.form', $dados->_id) }}">
+                <a class="btn btn-info btn-sm mx-1" href="{{ route('estacionamento.form', ['id'=> $dados['_id']]) }}">
                     <i class="fas fa-pencil-alt"></i>
                     Editar
                 </a>
-                <a class="btn btn-danger btn-sm mx-1" href="{{ route('estacionamento.excluir', $dados->_id) }}" onclick="return confirm('Tem certeza que deseja excluir esse estacionamento?')">
+                <a class="btn btn-danger btn-sm mx-1" href="{{ route('estacionamento.excluir', ['id'=> $dados['_id']]) }}" onclick="return confirm('Tem certeza que deseja excluir esse estacionamento?')">
                     <i class="fas fa-trash"></i>
                     Excluir
                 </a>

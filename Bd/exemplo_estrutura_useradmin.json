@@ -1,0 +1,11 @@
+{
+  "_id": {
+    "S": "6490b5eed51408e816ba93e2"
+  },
+  "email": {
+    "S": "teste@gmail.com"
+  },
+  "senha": {
+    "S": "123"
+  }
+}

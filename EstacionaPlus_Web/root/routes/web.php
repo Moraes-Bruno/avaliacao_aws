@@ -24,18 +24,12 @@ Route::view('/adminLogin','adminLogin')->name('adminLogin');
 Route::post('/adminLogin',[AdminController::class, 'adminLogin'])->name('admin.adminLogin');
 
 Route::group(['middleware' => 'checkAdminSession'], function () {//Session de Admin
-    Route::get('/admin/usuarios', [UsuarioController::class, 'listar'])->name('usuarios.listar');
-    Route::post('/admin/usuarios/inserir', [UsuarioController::class, 'inserir'])->name('usuario.inserir');
-    Route::get('/admin/usuarios/form/{_id?}', [UsuarioController::class, 'usuarios_form'])->name('usuario.form');
-    Route::put('/admin/usuarios/alterar/{_id}', [UsuarioController::class, 'alterar'])->name('usuario.alterar');
-    Route::get('/admin/usuarios/excluir/{_id}', [UsuarioController::class, 'excluir'])->name('usuario.excluir');
-    Route::get('/admin/usuarios/detalhes/{_id}', [UsuarioController::class, 'listar_um'])->name('usuario.detalhes');
     Route::get('/admin/estacionamentos', [EstacionamentoController::class, 'listar'])->name('estacionamentos.listar');
     Route::post('/admin/estacionamentos/inserir', [EstacionamentoController::class, 'inserir'])->name('estacionamento.inserir');
-    Route::get('/admin/estacionamentos/form/{_id?}', [EstacionamentoController::class, 'estacionamentos_form'])->name('estacionamento.form');
-    Route::put('/admin/estacionamentos/alterar/{_id}', [EstacionamentoController::class, 'alterar'])->name('estacionamento.alterar');
-    Route::get('/admin/estacionamentos/excluir/{_id}', [EstacionamentoController::class, 'excluir'])->name('estacionamento.excluir');
-    Route::get('/admin/estacionamentos/detalhes/{_id}', [EstacionamentoController::class, 'listar_um'])->name('estacionamento.detalhes');
+    Route::get('/admin/estacionamentos/form/{id?}', [EstacionamentoController::class, 'estacionamentos_form'])->name('estacionamento.form');
+    Route::put('/admin/estacionamentos/alterar/{id}', [EstacionamentoController::class, 'alterar'])->name('estacionamento.alterar');
+    Route::get('/admin/estacionamentos/excluir/{id}', [EstacionamentoController::class, 'excluir'])->name('estacionamento.excluir');
+    Route::get('/admin/estacionamentos/detalhes/{id}', [EstacionamentoController::class, 'listar_um'])->name('estacionamento.detalhes');
 });
 
 

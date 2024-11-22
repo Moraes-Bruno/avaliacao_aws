@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Estacionamento;
 use Illuminate\Http\Request;
+use App\Models\ApiClient;
 
 class EstacionamentoController extends Controller
 {
@@ -12,17 +12,23 @@ class EstacionamentoController extends Controller
         return view('adminLogin');
     }
     
-    public function estacionamentos_form($_id = false)
+    public function estacionamentos_form($id = false)
     {
-        if ($_id) {
-            $dados = Estacionamento::findOrFail($_id);
+        $apiClient = new ApiClient();
+        
+        if ($id) {
+            $response = $apiClient->readOne($id);
+            $dados = $response['Item'];
             return view('estacionamentos_form', compact('dados'));
         } else {
             return view('estacionamentos_form');
         }
     }
+    
     public function inserir(Request $request)
     {
+        $apiClient = new ApiClient();
+        
         // Obtenha os dados do formulário
         $dados = $request->all();
 
@@ -43,34 +49,49 @@ class EstacionamentoController extends Controller
                 $vagas[$index] = $vaga;
             }
         }
-
-        // Adicione as informações das vagas aos dados do estacionamento
-        $dados['vagas'] = $vagas;
-
-        // Crie um novo registro de estacionamento com os dados fornecidos
-        $estacionamento = new Estacionamento();
-        $estacionamento->fill($dados);
-        $estacionamento->save();
+        
+        $newItem = [
+            'nome' => $dados['nome'],
+            'endereco' => $dados['endereco'],
+            'totalVagas' => $dados['totalVagas'],
+            'vagas' => $vagas
+            ];
+        
+        $apiClient->create($newItem);
 
         return redirect()->route('estacionamentos.listar');
     }
+    
     private function gerarStatusVaga()
     {
         return rand(0, 1);
     }
+    
     public function listar()
     {
-        $estacionamentos = Estacionamento::all();
+        $apiClient = new ApiClient();
+        
+        $estacionamentos = $apiClient->readAll();
+        
         return view('exibir_estacionamentos', compact('estacionamentos'));
     }
+    
     public function listar_um($id)
     {
-        $dados = Estacionamento::findOrFail($id);
+        $apiClient = new ApiClient();
+        
+        $response = $apiClient->readOne($id);
+        
+        $dados = $response['Item'];
+        
         return view('detalhes_estacionamentos', compact('dados'));
     }
+    
     public function alterar(Request $request, $id)
     {
-        $dados = Estacionamento::findOrFail($id);
+        $apiClient = new ApiClient();
+        
+        $dados = $apiClient->readOne($id);
         $dados->nome = $request->nome;
         $dados->latitude = $request->latitude;
         $dados->longitude = $request->longitude;
@@ -96,23 +117,18 @@ class EstacionamentoController extends Controller
 
         // Adicione as informações das vagas aos dados do estacionamento
         $dados->vagas = $vagas;
-        $dados->save();
+        
+        $apiClient->update($id, $dados);
 
         return redirect()->route('estacionamentos.listar');
     }
-
 
     public function excluir($id)
     {
-        $dados = Estacionamento::destroy($id);
+        $apiClient = new ApiClient();
+        
+        $apiClient->delete($id);
+        
         return redirect()->route('estacionamentos.listar');
-    }
-
-    public function statusVaga($nome){
-    
-        $dados = Estacionamento::where('nome', $nome)->firstOrFail();
-
-        return response()->json($dados);
-
     }
 }
