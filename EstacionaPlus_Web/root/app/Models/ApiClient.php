@@ -39,19 +39,19 @@ class ApiClient {
             "senha"=>$senha
         );
         
-        $curl = curl_init();
+                $curl = curl_init();
 
         curl_setopt_array($curl, [
-            CURLOPT_URL => $this->apiUrl . "/admin",
+            CURLOPT_URL => $this->apiUrl . "/login",
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_CUSTOMREQUEST => 'POST',
             CURLOPT_HTTPHEADER => ['Content-Type: application/json']
         ]);
-            
+        
         $data = array(
             "payload"=>$payload
             );
-               
+        
         curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($data));
 
         $response = curl_exec($curl);
