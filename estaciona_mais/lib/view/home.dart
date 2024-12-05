@@ -140,12 +140,23 @@ class _MyHomePageState extends State<MyHomePage> {
 
 class CardWidget {
   Widget estacionaCard(BuildContext context, String nome, String endereco, int totalVagas, List<Map<String, dynamic>> vagas) {
+    // Obtém as linhas únicas presentes nas vagas
+    List<int> linhasVisiveis = vagas.map((vaga) => vaga['row'] as int).toSet().toList();
+    linhasVisiveis.sort(); // Ordena as linhas para exibir em ordem crescente
+
+    // Cria uma estrutura para armazenar a contagem de itens por linha
+    Map<int, List<Map<String, dynamic>>> vagasPorLinha = {};
+    for (var linha in linhasVisiveis) {
+      vagasPorLinha[linha] = vagas.where((vaga) => vaga['row'] == linha).toList();
+    }
+
     return Card(
       elevation: 5,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       child: Padding(
         padding: const EdgeInsets.all(10.0),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(nome, style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
             SizedBox(height: 10),
@@ -153,36 +164,43 @@ class CardWidget {
             SizedBox(height: 10),
             Text('Total de Vagas: $totalVagas'),
             SizedBox(height: 10),
-            GridView.builder(
-              shrinkWrap: true,
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 12, // 10 colunas
-                crossAxisSpacing: 5,
-                mainAxisSpacing: 5,
-                childAspectRatio: 1.0, // Ajusta o tamanho das células
-              ),
-              itemCount: vagas.length, // Ajusta o itemCount com base no número de vagas no JSON
-              itemBuilder: (context, index) {
-                var vaga = vagas[index];
-
-                // Obtemos o tipo da vaga, se não existir, colocamos uma string vazia
-                String tipo = vaga['tipo'] ?? "normal";
-
-                // Exibindo o tipo, se for diferente de "normal", mostramos o tipo, senão mostramos "normal"
-                return Container(
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.blue),
-                    borderRadius: BorderRadius.circular(5),
-                    color: vaga['status'] == 0 ? Colors.green : Colors.red, // Se a vaga está livre (0), é verde, caso contrário é vermelha
+            // Exibe a matriz linha por linha
+            ...linhasVisiveis.map((linha) {
+              var vagasLinha = vagasPorLinha[linha] ?? [];
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(height: 5),
+                  GridView.builder(
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: vagasLinha.length, // Número de itens visíveis na linha
+                      crossAxisSpacing: 5,
+                      mainAxisSpacing: 5,
+                      childAspectRatio: 1.0,
+                    ),
+                    itemCount: vagasLinha.length,
+                    itemBuilder: (context, index) {
+                      var vaga = vagasLinha[index];
+                      return Container(
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.blue),
+                          borderRadius: BorderRadius.circular(5),
+                          color: vaga['status'] == 0 ? Colors.green : Colors.red,
+                        ),
+                        child: Text(
+                          vaga['tipo'] ?? "normal",
+                          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                        ),
+                      );
+                    },
                   ),
-                  child: Text(
-                    tipo != "normal" ? tipo : "normal", // Exibe o tipo, ou "normal" se o tipo for "normal"
-                    style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-                  ),
-                );
-              },
-            )
+                  SizedBox(height: 10),
+                ],
+              );
+            }).toList(),
           ],
         ),
       ),
