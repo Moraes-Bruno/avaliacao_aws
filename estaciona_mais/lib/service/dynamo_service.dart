@@ -1,50 +1,25 @@
-import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 class DynamoService {
-  final apiUrl =
-      'https://ys8lk9fd78.execute-api.us-east-1.amazonaws.com/Teste';
+  final String apiUrl = "https://ekiuak4c87.execute-api.us-east-1.amazonaws.com/prod/estacionamentos";
 
-  // Criar Item
-  Future<void> createItem(String id, String nome) async {
-    final response = await http.put(
-      Uri.parse('$apiUrl/items'),
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({'estacionamentoId': id, 'nome': nome}),
+  // Função para consultar todos os estacionamentos
+  Future<List<dynamic>> consultarEstacionamentos() async {
+    final response = await http.post(
+      Uri.parse(apiUrl),
+      headers: {"Content-Type": "application/json"},
+      body: json.encode({
+        "operation": "read",
+        "payload": ""
+      }),
     );
-    print(response.body);
-  }
 
-  // Ler Item
-  Future<void> readItem(String id) async {
-    final response = await http.get(
-      Uri.parse('$apiUrl/items/$id'),
-    );
-    print(response.body);
-  }
-
-  Future<void> readItems() async {
-    final response = await http.get(
-      Uri.parse('$apiUrl/items'),
-    );
-    print(response.body);
-  }
-
-  // Atualizar Item
-  Future<void> updateItem(String id, String nome) async {
-    final response = await http.put(
-      Uri.parse('$apiUrl/items'),
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({'estacionamentoId': id, 'nome': nome}),
-    );
-    print(response.body);
-  }
-
-  // Excluir Item
-  Future<void> deleteItem(String id) async {
-    final response = await http.delete(
-      Uri.parse('$apiUrl/items/$id'),
-    );
-    print(response.body);
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      return data; // Retorna a lista de estacionamentos
+    } else {
+      throw Exception("Falha ao carregar os estacionamentos");
+    }
   }
 }
