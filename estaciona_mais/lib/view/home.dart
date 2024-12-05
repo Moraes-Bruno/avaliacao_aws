@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:estaciona_mais/widgets/card_widget.dart';
 import '../service/dynamo_service.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class MyHomePage extends StatefulWidget {
   MyHomePage({super.key});
@@ -11,7 +12,8 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  List<Map<String, dynamic>> estacionamentos = []; // Lista para armazenar os estacionamentos
+  List<Map<String, dynamic>> estacionamentos =
+      []; // Lista para armazenar os estacionamentos
   Timer? _timer;
 
   @override
@@ -33,7 +35,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
       // Atualiza os dados no estado
       setState(() {
-        estacionamentos = List<Map<String, dynamic>>.from(response); // Atualiza os dados
+        estacionamentos =
+            List<Map<String, dynamic>>.from(response); // Atualiza os dados
       });
     } catch (e) {
       // Em caso de erro, exibe uma mensagem
@@ -51,21 +54,28 @@ class _MyHomePageState extends State<MyHomePage> {
     // Itera sobre as chaves de vagas (exemplo "7,5")
     vagas.forEach((key, value) {
       // Extrai as coordenadas (linha, coluna) da chave "7,5"
-      List<String> parts = key.split(','); // Divide a chave para pegar linha e coluna
-      int row = int.parse(parts[0]);  // Parte antes da vírgula (linha)
-      int col = int.parse(parts[1]);  // Parte depois da vírgula (coluna)
+      List<String> parts =
+          key.split(','); // Divide a chave para pegar linha e coluna
+      int row = int.parse(parts[0]); // Parte antes da vírgula (linha)
+      int col = int.parse(parts[1]); // Parte depois da vírgula (coluna)
 
-      String positionKey = "$row,$col"; // Cria uma chave única para cada posição
+      String positionKey =
+          "$row,$col"; // Cria uma chave única para cada posição
 
       // Verificando se a vaga contém um valor válido e não vazio
-      if (value != null && value != "" && value != 0 && !(value is Map && value.isEmpty) && !(value is List && value.isEmpty)) {
+      if (value != null &&
+          value != "" &&
+          value != 0 &&
+          !(value is Map && value.isEmpty) &&
+          !(value is List && value.isEmpty)) {
         if (!vagasSet.contains(positionKey)) {
           vagasSet.add(positionKey);
 
           // Aqui estamos verificando se o valor contém o que você pediu
           if (value is Map) {
             // Extraímos a posição e o tipo de valor, caso existam
-            String tipo = value['Tipo'] ?? ""; // Pega o tipo, ou uma string vazia se não existir
+            String tipo = value['Tipo'] ??
+                ""; // Pega o tipo, ou uma string vazia se não existir
 
             // **Aqui está a alteração**: Verifica se o 'Tipo' não é "vazio"
             if (tipo != "vazio" && tipo.isNotEmpty) {
@@ -74,7 +84,8 @@ class _MyHomePageState extends State<MyHomePage> {
               vagasList.add({
                 'row': row,
                 'col': col,
-                'status': value['Status'],  // Pega o status da vaga (1 ou outro valor diferente de 0)
+                'status': value[
+                    'Status'], // Pega o status da vaga (1 ou outro valor diferente de 0)
                 'tipo': tipo, // Adiciona o tipo à vaga
               });
             }
@@ -105,23 +116,29 @@ class _MyHomePageState extends State<MyHomePage> {
       body: SingleChildScrollView(
         child: Column(
           children: estacionamentos.isEmpty
-              ? [Center(child: CircularProgressIndicator())] // Exibe um carregando enquanto não tiver dados
+              ? [
+                  Center(child: CircularProgressIndicator())
+                ] // Exibe um carregando enquanto não tiver dados
               : estacionamentos.map((estacionamento) {
-            // Cria a lista de vagas com base nos dados da API
-            List<Map<String, dynamic>> vagas = _criarListaVagas(estacionamento['vagas']);
+                  // Cria a lista de vagas com base nos dados da API
+                  List<Map<String, dynamic>> vagas =
+                      _criarListaVagas(estacionamento['vagas']);
 
-            // Cria o card com o nome, total de vagas e a lista de vagas
-            return Padding(
-              padding: const EdgeInsets.all(10.0), // Aumenta o padding do card
-              child: CardWidget().estacionaCard(
-                context,
-                estacionamento["nome"] ?? "Nome não disponível", // Nome do estacionamento
-                estacionamento["endereco"] ?? "Endereço não disponível", // Endereço do estacionamento
-                _parseInt(estacionamento["totalVagas"]), // Total de vagas
-                vagas, // Lista de vagas com status
-              ),
-            );
-          }).toList(),
+                  // Cria o card com o nome, total de vagas e a lista de vagas
+                  return Padding(
+                    padding:
+                        const EdgeInsets.all(10.0), // Aumenta o padding do card
+                    child: CardWidget().estacionaCard(
+                      context,
+                      estacionamento["nome"] ??
+                          "Nome não disponível", // Nome do estacionamento
+                      estacionamento["endereco"] ??
+                          "Endereço não disponível", // Endereço do estacionamento
+                      _parseInt(estacionamento["totalVagas"]), // Total de vagas
+                      vagas, // Lista de vagas com status
+                    ),
+                  );
+                }).toList(),
         ),
       ),
     );
@@ -132,22 +149,26 @@ class _MyHomePageState extends State<MyHomePage> {
     if (value == null) return 0; // Se for nulo, retorna 0
     if (value is int) return value; // Se já for int, retorna como está
     if (value is String) {
-      return int.tryParse(value) ?? 0; // Se for string, tenta converter para int, se falhar, retorna 0
+      return int.tryParse(value) ??
+          0; // Se for string, tenta converter para int, se falhar, retorna 0
     }
     return 0; // Se for outro tipo, retorna 0
   }
 }
 
 class CardWidget {
-  Widget estacionaCard(BuildContext context, String nome, String endereco, int totalVagas, List<Map<String, dynamic>> vagas) {
+  Widget estacionaCard(BuildContext context, String nome, String endereco,
+      int totalVagas, List<Map<String, dynamic>> vagas) {
     // Obtém as linhas únicas presentes nas vagas
-    List<int> linhasVisiveis = vagas.map((vaga) => vaga['row'] as int).toSet().toList();
+    List<int> linhasVisiveis =
+        vagas.map((vaga) => vaga['row'] as int).toSet().toList();
     linhasVisiveis.sort(); // Ordena as linhas para exibir em ordem crescente
 
     // Cria uma estrutura para armazenar a contagem de itens por linha
     Map<int, List<Map<String, dynamic>>> vagasPorLinha = {};
     for (var linha in linhasVisiveis) {
-      vagasPorLinha[linha] = vagas.where((vaga) => vaga['row'] == linha).toList();
+      vagasPorLinha[linha] =
+          vagas.where((vaga) => vaga['row'] == linha).toList();
     }
 
     return Card(
@@ -158,7 +179,8 @@ class CardWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(nome, style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+            Text(nome,
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
             SizedBox(height: 10),
             Text(endereco),
             SizedBox(height: 10),
@@ -175,7 +197,8 @@ class CardWidget {
                     shrinkWrap: true,
                     physics: NeverScrollableScrollPhysics(),
                     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: vagasLinha.length, // Número de itens visíveis na linha
+                      crossAxisCount: vagasLinha
+                          .length, // Número de itens visíveis na linha
                       crossAxisSpacing: 5,
                       mainAxisSpacing: 5,
                       childAspectRatio: 1.0,
@@ -188,11 +211,34 @@ class CardWidget {
                         decoration: BoxDecoration(
                           border: Border.all(color: Colors.blue),
                           borderRadius: BorderRadius.circular(5),
-                          color: vaga['status'] == 0 ? Colors.green : Colors.red,
+                          color:
+                              vaga['status'] == 0 ? Colors.green : Colors.red,
                         ),
-                        child: Text(
-                          vaga['tipo'] ?? "normal",
-                          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                        child: vaga['tipo'] == 'deficiente'
+                            ? SvgPicture.asset(
+                          'assets/icons/deficiente.svg',
+                          color: Colors.white,// Ícone para deficiente
+                          width: 30,
+                          height: 30,
+                        )
+                            : vaga['tipo'] == 'autista'
+                            ? SvgPicture.asset(
+                          'assets/icons/autista.svg',
+                          color: Colors.white,// Ícone para autista
+                          width: 30,
+                          height: 30,
+                        )
+                            : vaga['tipo'] == 'idoso'
+                            ? SvgPicture.asset(
+                          'assets/icons/idoso.svg',
+                          color: Colors.white,// Ícone para idoso
+                          width: 30,
+                          height: 30,
+                        )
+                            : Text(
+                          "Normal",
+                          style: TextStyle(
+                              color: Colors.white, fontWeight: FontWeight.bold),
                         ),
                       );
                     },
