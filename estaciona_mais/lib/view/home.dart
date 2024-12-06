@@ -218,25 +218,25 @@ class CardWidget {
                             ? SvgPicture.asset(
                           'assets/icons/deficiente.svg',
                           color: Colors.white,// Ícone para deficiente
-                          width: 30,
-                          height: 30,
+                          width: 16,
+                          height: 16,
                         )
                             : vaga['tipo'] == 'autista'
                             ? SvgPicture.asset(
                           'assets/icons/autista.svg',
                           color: Colors.white,// Ícone para autista
-                          width: 30,
-                          height: 30,
+                          width: 16,
+                          height: 16,
                         )
                             : vaga['tipo'] == 'idoso'
                             ? SvgPicture.asset(
                           'assets/icons/idoso.svg',
                           color: Colors.white,// Ícone para idoso
-                          width: 30,
-                          height: 30,
+                          width: 16,
+                          height: 16,
                         )
                             : Text(
-                          "Normal",
+                          "",
                           style: TextStyle(
                               color: Colors.white, fontWeight: FontWeight.bold),
                         ),
