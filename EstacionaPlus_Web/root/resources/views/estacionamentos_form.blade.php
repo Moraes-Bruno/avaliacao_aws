@@ -198,20 +198,25 @@
                 }
                 ?>
                 <table class="table table-bordered">
-                    @for ($i = 0; $i < 12; $i++) <tr>
-                        @for ($j = 0; $j < 24; $j++) <?php $index = "$i,$j"; ?> <td class="<?php echo strtolower($matrix[$i][$j]['Tipo']) ?>">
-                            <div style="display: flex; justify-content: center;">
-                                <label for="vagas[]"></label>
-                                <input style="height:20px; width:20px;margin:25%" type="checkbox" id="vaga{{ $index }}" name="vagas[]" value="{{ $index }}" @if($matrix[$i][$j]['Tipo'] !="vazio" && $matrix[$i][$j]['Tipo'] != null) checked @endif>
-                            </div>
-                            <input type="hidden" name="vagas[{{ $index }}][Posição]" id="posicao" value="{{ $index }}">
-                            <input type="hidden" name="vagas[{{ $index }}][Tipo]" id="tipo" value="{{ $matrix[$i][$j]['Tipo'] }}">
-                            <input type="hidden" name="vagas[{{ $index }}][Status]" id="status" value="{{ $matrix[$i][$j]['Status'] }}">
-                            </td>
-
+                    @for ($i = 0; $i < 12; $i++) 
+                        <tr>
+                            @for ($j = 0; $j < 24; $j++) 
+                                <?php $index = "$i,$j"; ?>
+                                <td class="{{ isset($matrix[$i][$j]) && is_array($matrix[$i][$j]) && $matrix[$i][$j]['Tipo'] !== null ? strtolower($matrix[$i][$j]['Tipo']) : 'vazio' }}">
+                                    <div style="display: flex; justify-content: center;">
+                                        <label for="vagas[]"></label>
+                                        <input style="height:20px; width:20px;margin:25%" type="checkbox" id="vaga{{ $index }}" name="vagas[]" value="{{ $index }}" 
+                                            @if(isset($matrix[$i][$j]) && is_array($matrix[$i][$j]) && $matrix[$i][$j]['Tipo'] != "vazio" && $matrix[$i][$j]['Tipo'] != null) checked @endif>
+                                    </div>
+                                    @if(isset($matrix[$i][$j]) && is_array($matrix[$i][$j]))
+                                        <input type="hidden" name="vagas[{{ $index }}][Posição]" id="posicao" value="{{ $index }}">
+                                        <input type="hidden" name="vagas[{{ $index }}][Tipo]" id="tipo" value="{{ $matrix[$i][$j]['Tipo'] }}">
+                                        <input type="hidden" name="vagas[{{ $index }}][Status]" id="status" value="{{ $matrix[$i][$j]['Status'] }}">
+                                    @endif
+                                </td>
                             @endfor
-                            </tr>
-                            @endfor
+                        </tr>
+                    @endfor
                 </table>
             </div>
         </div>
@@ -220,7 +225,7 @@
         </div>
         <div class="row">
             <div class="col-12">
-                <a href="../" class="btn btn-secondary">Cancelar</a>
+                <a href="../estacionamentos" class="btn btn-secondary">Cancelar</a>
                 <input type="submit" value="Salvar" class="btn btn-warning float-right">
             </div>
         </div>
@@ -313,7 +318,7 @@
         </div>
         <div class="row">
             <div class="col-12">
-                <a href="../" class="btn btn-secondary">Cancelar</a>
+                <a href="../estacionamentos" class="btn btn-secondary">Cancelar</a>
                 <input type="submit" value="Salvar" class="btn btn-success float-right">
             </div>
         </div>

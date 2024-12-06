@@ -85,9 +85,9 @@ class ApiClient {
     public function update($id, $item) {
         $payload = array(
             "Key"=>array(
-              "_id"=>$id
+              "_id"=>strval($id)
             ),
-            "UpdateExpression"=>"SET #campoNome = :newNome and #campoEndereco = :newEndereco and #campoTotalVagas = :newTotalVagas and #campoVagas = :newVagas",
+            "UpdateExpression"=>"SET #campoNome = :newNome, #campoEndereco = :newEndereco, #campoTotalVagas = :newTotalVagas, #campoVagas = :newVagas",
             "ExpressionAttributeNames"=>array(
               "#campoNome"=>"nome",
               "#campoEndereco"=>"endereco",

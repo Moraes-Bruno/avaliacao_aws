@@ -91,12 +91,13 @@ class EstacionamentoController extends Controller
     {
         $apiClient = new ApiClient();
         
-        $dados = $apiClient->readOne($id);
-        $dados->nome = $request->nome;
-        $dados->latitude = $request->latitude;
-        $dados->longitude = $request->longitude;
-        $dados->totalVagas = $request->totalVagas;
-        $dados->endereco = $request->endereco;
+        $response = $apiClient->readOne($id);
+        
+        $dados = $response['Item'];
+        
+        $dados['nome'] = $request['nome'];
+        $dados['totalVagas'] = $request['totalVagas'];
+        $dados['endereco'] = $request['endereco'];
 
         $vagas = [];
 
@@ -105,21 +106,20 @@ class EstacionamentoController extends Controller
             for ($j = 0; $j < 24; $j++) {
                 $index = "$i,$j";
                 $tipoVaga = $request->input("vagas.$index.Tipo");
-                $status = $request->input("vagas.$index.Status");
                 $vaga = [
                     'Posição' => $index,
                     'Tipo' => $tipoVaga,
-                    'Status' => $status,
+                    'Status' => $this->gerarStatusVaga()
                 ];
                 $vagas[$index] = $vaga;
             }
         }
 
         // Adicione as informações das vagas aos dados do estacionamento
-        $dados->vagas = $vagas;
+        $dados["vagas"] = $vagas;
         
         $apiClient->update($id, $dados);
-
+    
         return redirect()->route('estacionamentos.listar');
     }
 
